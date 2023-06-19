@@ -1,26 +1,23 @@
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import Button from 'react-bootstrap/Button';
+import { Navbar, Container, Nav, Button } from "react-bootstrap";
 
-function NavbarSection() {
+const NavbarSection = () => {
   return (
-    <Navbar>
-      <Container>
-        <Navbar.Brand href="#home">smartBudget</Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Text>
-          {" "}
-        </Navbar.Text>
-        <Navbar.Collapse className="justify-content-end">
-        <Button>New Budget</Button>
-        <div></div>
-          <Navbar.Text>
-            Signed in as: <a href="profile">CSS</a>
-          </Navbar.Text>
-        </Navbar.Collapse>
-      </Container>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Brand href="#home" className="mr-auto ps-5">
+        smartBudget
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto"></Nav>
+        <Nav className="me-5">
+          <Nav.Link href="#account" className="me-4">
+            Account
+          </Nav.Link>
+          <Button variant="outline-light" className="">new budget</Button>
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   );
-}
+};
 
 export default NavbarSection;

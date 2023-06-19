@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Container, Table, Button, Form } from "react-bootstrap";
 import "tailwindcss/tailwind.css";
 import "./HomePage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function HomePage() {
   const [itemName, setItemName] = useState("");
@@ -15,49 +17,28 @@ export default function HomePage() {
 
   const handleAddItem = () => {
     const newItem = {
-      itemName: itemName,
+      name: itemName,
       quantity: quantity,
-      unitPrice: unitPrice,
+      unit_price: unitPrice,
     };
     setItems([...items, newItem]);
     setItemName("");
     setQuantity("");
     setUnitPrice("");
     setShowForm(false);
-    submitBudget();
   };
 
-  const submitBudget = () => {
+  const createBudget = () => {
     axios
       .post("http://127.0.0.1:8000/api/create-budget", {
-        title: "Prof Hayfron Quiz",
-        society: 1,
-        item: [
-          {
-            name: "Citation for Prof",
-            unit_price: 100.0,
-            quantity: 1,
-          },
-          {
-            name: "Hard Drives",
-            unit_price: 120.0,
-            quantity: 12,
-          },
-          {
-            name: "Water",
-            unit_price: 9.0,
-            quantity: 5,
-          },
-          {
-            name: "Canned Water",
-            unit_price: 3.0,
-            quantity: 10,
-          },
-        ],
+        title: "New Budget",
+        society_id: 2,
+        items: items,
       })
       .then((response) => {
-        // Handle the response data
+        toast.success("Budget created successfully!");
         console.log(response.data);
+        setItems([]);
       })
       .catch((error) => {
         // Handle any errors
@@ -74,6 +55,7 @@ export default function HomePage() {
   return (
     <div>
       <NavbarSection />
+      <ToastContainer />
       <Container className="p-4">
         <h1 className="text-2xl font-bold mb-4">Item List</h1>
 
@@ -88,9 +70,9 @@ export default function HomePage() {
           <tbody>
             {items.map((item, index) => (
               <tr key={index}>
-                <td>{item.itemName}</td>
+                <td>{item.name}</td>
                 <td>{item.quantity}</td>
-                <td>{item.unitPrice}</td>
+                <td>{item.unit_price}</td>
               </tr>
             ))}
           </tbody>
@@ -138,6 +120,8 @@ export default function HomePage() {
             </Button>
           </Form>
         )}
+        <br />
+        <Button onClick={createBudget}>Create Budget</Button>
       </Container>
     </div>
   );

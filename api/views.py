@@ -10,21 +10,26 @@ class BudgetCreateView(generics.CreateAPIView):
     serializer_class = BudgetSerializer
 
     def create(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Retrieve and remove 'items' data from validated data
+        # Retrieve and remove 'items' and 'society_id' data from validated data
         items_data = serializer.validated_data.pop('items')
+        society_id = serializer.validated_data.pop('society_id')
 
-        society = Society.objects.get(id=1)
+        # Get the society using the provided society_id
+        society = Society.objects.get(id=society_id)
+
+        # Create the budget with the society and other validated data
         budget = Budget.objects.create(society=society, **serializer.validated_data)
 
         # Create and associate 'items' with the budget
         for item_data in items_data:
             Item.objects.create(budget=budget, **item_data)
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        headers = self.get_success_headers({})
+        return Response({'message':f"Budget {serializer.validated_data['title']} successfully created!"}, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class GetSocietyBudgets(APIView):

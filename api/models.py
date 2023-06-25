@@ -2,11 +2,23 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-class Society(models.Model):
+""" class Society(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
+        return self.name """
+class Society(AbstractUser):
+    name = models.CharField(max_length=255)
+    email = models.EmailField('email adress', unique=True)
+    password = models.CharField(max_length=255)
+    username = None
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
         return self.name
+
 
 class Budget(models.Model):
     STATUS_CHOICES = (
@@ -46,14 +58,4 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
-
-class User(AbstractUser):
-    name = models.CharField(max_length=255)
-    #email = models.CharField(max_length=255, unique=True)
-    email = models.EmailField('email adress', unique=True)
-    password = models.CharField(max_length=255)
-    username = None
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 

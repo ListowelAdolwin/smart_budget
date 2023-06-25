@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Budget, Item, Society
-from .models import User
 
 
 
@@ -31,16 +30,16 @@ class BudgetSerializer(serializers.ModelSerializer):
         return budget
 
 
-class SocietySerializer(serializers.ModelSerializer):
+""" class SocietySerializer(serializers.ModelSerializer):
     class Meta:
         model = Society
         fields = "__all__"
 
 
-
-class UserSerializer(serializers.ModelSerializer):
+ """
+class SocietySerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = Society
         fields = ['id', 'name', 'email', 'password']
         extra_kwargs = {
             'password': {'write_only': True}

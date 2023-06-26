@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate,
-} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -35,6 +29,7 @@ const Register = () => {
 
   return (
     <form onSubmit={submit}>
+      <br />
       <h1 className="h3 mb-3 fw-normal">Please register</h1>
 
       <input
@@ -43,6 +38,7 @@ const Register = () => {
         required
         onChange={(e) => setName(e.target.value)}
       />
+      <br />
 
       <input
         type="email"
@@ -51,6 +47,7 @@ const Register = () => {
         required
         onChange={(e) => setEmail(e.target.value)}
       />
+      <br />
 
       <input
         type="password"
@@ -59,9 +56,10 @@ const Register = () => {
         required
         onChange={(e) => setPassword(e.target.value)}
       />
+      <br />
 
       <button className="w-100 btn btn-lg btn-primary" type="submit">
-        Submit
+        Register
       </button>
     </form>
   );

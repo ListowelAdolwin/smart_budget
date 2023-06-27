@@ -31,8 +31,8 @@ export default function HomePage() {
   const createBudget = () => {
     axios
       .post("http://127.0.0.1:8000/api/create-budget", {
-        title: "New Budget",
-        society_id: 2,
+        title: "Algorithmic Quiz",
+        society_id: 1,
         items: items,
       })
       .then((response) => {
@@ -54,7 +54,6 @@ export default function HomePage() {
 
   return (
     <div>
-      <NavbarSection />
       <ToastContainer />
       <Container className="p-4">
         <h1 className="text-2xl font-bold mb-4">Item List</h1>

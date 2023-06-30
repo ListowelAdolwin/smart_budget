@@ -1,13 +1,13 @@
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Budget, Society, Item, User
-from .serializers import BudgetSerializer, ItemSerializer, SocietySerializer, UserSerializer
+from .models import Budget, Society, Item
+from .serializers import BudgetSerializer, ItemSerializer, SocietySerializer
 
 
-from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
-import jwt, datetime
+import jwt
+import datetime
 
 
 class BudgetCreateView(generics.CreateAPIView):
@@ -26,20 +26,23 @@ class BudgetCreateView(generics.CreateAPIView):
         society = Society.objects.get(id=society_id)
 
         # Create the budget with the society and other validated data
-        budget = Budget.objects.create(society=society, **serializer.validated_data)
+        budget = Budget.objects.create(
+            society=society, **serializer.validated_data)
 
         # Create and associate 'items' with the budget
         for item_data in items_data:
             Item.objects.create(budget=budget, **item_data)
 
         headers = self.get_success_headers({})
-        return Response({'message':f"Budget {serializer.validated_data['title']} successfully created!"}, status=status.HTTP_201_CREATED, headers=headers)
+        return Response({'message': f"Budget {serializer.validated_data['title']} successfully created!"}, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class GetSocietyBudgets(APIView):
     def get(self, request, id):
         society = Society.objects.get(id=id)
         society_budgets = society.budget_set.all()
+        if not society_budgets:
+            return Response({"Error":f"No budgets found for {society}"})
         serializer = BudgetSerializer(society_budgets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -50,8 +53,8 @@ class CalculateBudget(APIView):
         total = budget.calculate_total()
         grand_total = budget.calculate_grand_total()
         data = {
-            "total":total,
-            "grand_total":grand_total,
+            "total": total,
+            "grand_total": grand_total,
         }
 
         return Response(data)
@@ -59,7 +62,7 @@ class CalculateBudget(APIView):
 
 class RegisterView(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = SocietySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -70,21 +73,22 @@ class LoginView(APIView):
         email = request.data['email']
         password = request.data['password']
 
-        user = User.objects.filter(email=email).first()
+        society = Society.objects.filter(email=email).first()
 
-        if user is None:
+        if society is None:
             raise AuthenticationFailed('User not found!')
 
-        if not user.check_password(password):
+        if not society.check_password(password):
             raise AuthenticationFailed('Incorrect password!')
 
         payload = {
-            'id': user.id,
+            'id': society.id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
             'iat': datetime.datetime.utcnow()
         }
 
-        token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
+        token = jwt.encode(payload, 'secret',
+                           algorithm='HS256').decode('utf-8')
 
         response = Response()
 
@@ -96,7 +100,6 @@ class LoginView(APIView):
 
 
 class UserView(APIView):
-
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -108,8 +111,8 @@ class UserView(APIView):
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Unauthenticated!')
 
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        society = Society.objects.filter(id=payload['id']).first()
+        serializer = SocietySerializer(society)
         return Response(serializer.data)
 
 

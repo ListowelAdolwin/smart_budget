@@ -8,7 +8,7 @@ import "./HomePage.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function HomePage() {
+export default function HomePage(props) {
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [unitPrice, setUnitPrice] = useState("");
@@ -32,7 +32,7 @@ export default function HomePage() {
     axios
       .post("http://127.0.0.1:8000/api/create-budget", {
         title: "Algorithmic Quiz",
-        society_id: 1,
+        society_id: props.id,
         items: items,
       })
       .then((response) => {
@@ -41,13 +41,13 @@ export default function HomePage() {
         setItems([]);
       })
       .catch((error) => {
-        // Handle any errors
         console.error(error);
       });
   };
 
   const getBudget = () => {
-    axios.get("http://127.0.0.1:8000/api/get-budgets/2").then((res) => {
+    //`/room/${roomCode}`
+    axios.get("http://127.0.0.1:8000/api/get-budgets/`{props.id}`").then((res) => {
       console.log(res.data);
     });
   };
@@ -55,8 +55,11 @@ export default function HomePage() {
   return (
     <div>
       <ToastContainer />
+
       <Container className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Item List</h1>
+        <h1 className="text-2xl font-bold mb-4" onClick={getBudget}>
+          Item List
+        </h1>
 
         <Table striped bordered hover responsive>
           <thead>

@@ -91,15 +91,17 @@ class LoginView(APIView):
                            algorithm='HS256').decode('utf-8')
 
         response = Response()
+        society_id = society.id
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
-            'jwt': token
+            'jwt': token,
+            'id':society_id
         }
         return response
 
 
-class UserView(APIView):
+class SocietyView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -111,7 +113,7 @@ class UserView(APIView):
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Unauthenticated!')
 
-        society = Society.objects.filter(id=payload['id']).first()
+        society = Society.objects.get(id=payload['id'])
         serializer = SocietySerializer(society)
         return Response(serializer.data)
 

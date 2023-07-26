@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "./Login.css"
+import "./Login.css";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -38,45 +38,50 @@ const Login = (props) => {
     });
 
     const content = await response.json();
-    toast.success("Logged in successfully!");
-    console.log(content)
-
-    setRedirect(true);
+    if (response.ok) {
+      props.setId(content.id);
+      props.setName(content.name);
+      setRedirect(true);
+    }else{
+      alert("Please enter correct credentials")
+    }
   };
 
   if (redirect) {
-    alert("User logged in successfully")
+    //alert("User logged in successfully")
     return <Navigate to="/" />;
   }
 
   return (
-    <div><ToastContainer />
-    <br/>
-    <form onSubmit={submit}>
-      <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-      <input
-        type="email"
-        className="form-control"
-        placeholder="Email address"
-        required
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <br/>
+    <div>
+      <ToastContainer />
+      <br />
+      <form onSubmit={submit}>
+        <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+        <input
+          type="email"
+          className="form-control"
+          placeholder="Email address"
+          required
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <br />
 
-      <input
-        type="password"
-        className="form-control"
-        placeholder="Password"
-        required
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br/>
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Password"
+          required
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
 
-      <button className="w-100 btn btn-lg btn-primary" type="submit">
-        Login
-      </button>
-    </form>
-  </div>);
+        <button className="w-100 btn btn-lg btn-primary" type="submit">
+          Login
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default Login;

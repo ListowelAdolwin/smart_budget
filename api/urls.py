@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BudgetCreateView, CalculateBudget, GetSocietyBudgets, RegisterView, LoginView, UserView, LogoutView
+from .views import BudgetCreateView, CalculateBudget, GetSocietyBudgets, RegisterView, LoginView, SocietyView, LogoutView
 
 
 urlpatterns = [
@@ -9,6 +9,6 @@ urlpatterns = [
 
     path('register', RegisterView.as_view()),
     path('login', LoginView.as_view()),
-    path('user', UserView.as_view()),
+    path('society', SocietyView.as_view()),
     path('logout', LogoutView.as_view()),
 ]

@@ -10,6 +10,6 @@ This application helps automate budget writing. I developed it for my use when I
 
 ## Tech Stack
 
-**Client:** React, Axios, Bootstrap
+**Client:** React, Axios, Bootstrap, Jwt
 
-**Server:** Django REST APIs, pdfki, MySQL
+**Server:** Django REST APIs, Jwt, pdfki, MySQL

@@ -1,0 +1,25 @@
+.dashboard-main-content {
+  width: 98.9vw;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(158, 106, 155);
+}
+
+h1{
+    margin-bottom: 10px;
+}
+
+.budgets{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.budget{
+  width: 30%;
+  margin: 10px 0;
+}

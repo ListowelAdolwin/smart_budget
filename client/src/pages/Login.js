@@ -1,36 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "./Login.css";
+import AuthContext from "../components/context/AuthContext";
+import jwt_decode from "jwt-decode";
 
 const Login = (props) => {
+  let { setUser, setAuthtokens } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
 
-  const createBudget = (e) => {
-    e.preventDefault();
-    axios
-      .post("http://127.0.0.1:8000/api/login", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        toast.success("Logged in successfully!");
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   const submit = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:8000/api/login", {
+    const response = await fetch("http://localhost:8000/api/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify({
         email,
         password,
@@ -39,24 +25,24 @@ const Login = (props) => {
 
     const content = await response.json();
     if (response.ok) {
-      props.setId(content.id);
-      props.setName(content.name);
+      setAuthtokens(content);
+      setUser(jwt_decode(content.access));
+      localStorage.setItem("authtokens", JSON.stringify(content));
       setRedirect(true);
-    }else{
-      alert("Please enter correct credentials")
+    } else {
+      alert("Please enter correct credentials");
     }
   };
 
   if (redirect) {
-    //alert("User logged in successfully")
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return (
     <div>
       <ToastContainer />
       <br />
-      <form onSubmit={submit}>
+      <form className="login-form" onSubmit={submit}>
         <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
         <input
           type="email"

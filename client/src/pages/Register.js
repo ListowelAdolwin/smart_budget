@@ -28,7 +28,7 @@ const Register = () => {
   }
 
   return (
-    <form onSubmit={submit}>
+    <form className="login-form" onSubmit={submit}>
       <br />
       <h1 className="h3 mb-3 fw-normal">Please register</h1>
 

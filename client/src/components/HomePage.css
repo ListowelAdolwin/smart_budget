@@ -1,11 +1,21 @@
 .homepage {
-    height: 100vh;
-  }
+  height: 100vh;
+}
 
-  .background {
-    background-color: #1f66ae;
-  }
+.background {
+  background-color: #1f66ae;
+}
 
-  .content {
-    padding-top: 100px;
-  }
+.content {
+  padding-top: 100px;
+}
+
+.budget-title {
+  text-align: center;
+  text-decoration: solid;
+  margin-bottom: 20px;
+}
+
+.homepage {
+  margin-top: 30px;
+}

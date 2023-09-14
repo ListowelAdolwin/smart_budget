@@ -1,19 +1,17 @@
 import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "./context/AuthContext";
 
 const NavbarSection = (props) => {
-  const logout = async () => {
-    await fetch("http://localhost:8000/api/logout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
-    props.setId(null)
-    props.setName(null)
-    return <Navigate to="/" />;
+  let { user, setUser, setAuthtokens, tokens } = useContext(AuthContext);
+  const logout = () => {
+    localStorage.removeItem("authtokens");
+    setUser(null);
+    setAuthtokens(null);
+    return <Navigate to="/" replace />;
   };
-
-  if (props.id === null) {
+  if (!user) {
     return (
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Navbar.Brand href="/" className="mr-auto ps-5">
@@ -50,15 +48,16 @@ const NavbarSection = (props) => {
           <Nav className="me-auto"></Nav>
           <Nav className="me-5">
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
-              <li className="nav-item active">
-                </li>
+              <li className="nav-item active"></li>
               <li>
-                <Button onClick={logout}> Logout</Button>
+                <Button onClick={logout}>Logout</Button>
               </li>
             </ul>
-            <Button variant="outline-light" className="mx-2">
-              {props.name}
-            </Button>
+            <span className="user-avatar">
+              <Button variant="outline-light" className="mx-2 rounded-circle">
+                {user.name[0]}{user.name[1]}
+              </Button>
+            </span>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

@@ -1,44 +1,63 @@
 import "./App.css";
 import HomePage from "./components/HomePage";
-import NavbarSection from "./components/NavBar";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import MainDasboard from "./components/dashboard/MainDashboard";
+import PrivateRoute from "./components/PrivateRoute";
+import AuthContext from "./components/context/AuthContext";
+import jwt_decode from "jwt-decode";
 
 function App() {
+  let token = localStorage.getItem("authtokens");
+  let initialToken;
+  let initialUser;
+  if (token === null) {
+    initialUser = null;
+    initialToken = null;
+  } else {
+    initialUser = jwt_decode(JSON.parse(token).access);
+    initialToken = JSON.parse(token);
+  }
   const [name, setName] = useState(null);
-  const [society_id, setSociety_id] = useState(null)
+  const [id, setId] = useState(null);
+  const [authtokens, setAuthtokens] = useState(initialToken);
+  const [user, setUser] = useState(initialUser);
 
-  useEffect(() => {
-    (
-        async () => {
-            const response = await fetch('http://localhost:8000/api/society', {
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include',
-            });
 
-            const content = await response.json();
-
-            setSociety_id(content.id);
-            setName(content.name)
-        }
-    )();
-},[]);
-
+  const contextData = {
+    name: name,
+    setName: setName,
+    id: id,
+    setId: setId,
+    user: user,
+    setUser: setUser,
+    authtokens: authtokens,
+    setAuthtokens: setAuthtokens,
+  };
 
   return (
-    <div className="App">
+    <AuthContext.Provider value={contextData}>
+      <div className="App">
         <Router>
-        <NavbarSection setName={setName} setId={setSociety_id} name={name} id={society_id} />
           <Routes>
-            <Route exact path = "/" element={<HomePage name={name} id={society_id}/>} />
-            <Route path="/login" element={<Login setName={setName} setId={setSociety_id}/>} />
-            <Route path="/register" element={<Register/>} />
+            <Route
+              exact
+              path="/create-budget"
+              element={
+                <PrivateRoute isAuthenticated={user != null}>
+                  <HomePage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<MainDasboard />} />
           </Routes>
         </Router>
-    </div>
+      </div>
+    </AuthContext.Provider>
   );
 }
 

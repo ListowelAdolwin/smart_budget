@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Budget, Society, Item
 from .serializers import BudgetSerializer, ItemSerializer, SocietySerializer
@@ -8,6 +9,10 @@ from .serializers import BudgetSerializer, ItemSerializer, SocietySerializer
 from rest_framework.exceptions import AuthenticationFailed
 import jwt
 import datetime
+
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class BudgetCreateView(generics.CreateAPIView):
@@ -42,9 +47,29 @@ class GetSocietyBudgets(APIView):
         society = Society.objects.get(id=id)
         society_budgets = society.budget_set.all()
         if not society_budgets:
-            return Response({"Error":f"No budgets found for {society}"})
+            return Response({})
         serializer = BudgetSerializer(society_budgets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UpdateBudget(APIView):
+    def get(self, request, id):
+        budget = Budget.objects.get(id=id)
+        serializer = BudgetSerializer(budget)
+        # budget.delete()
+        print(serializer.data.items)
+        total = 0
+        # for _, prize, quantity in serializer.data.items:
+        #     total += prize * quantity
+        # print(total)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DeleteBudget(APIView):
+    def post(self, request, id):
+        budget = budget = Budget.objects.get(id=id)
+        budget.delete()
+        return Response({"message": "Deleted successfully"})
 
 
 class CalculateBudget(APIView):
@@ -96,7 +121,7 @@ class LoginView(APIView):
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
             'jwt': token,
-            'id':society_id
+            'id': society_id
         }
         return response
 
@@ -126,3 +151,30 @@ class LogoutView(APIView):
             'message': 'Logged out successfully'
         }
         return response
+
+
+@api_view(['GET'])
+def Routes(request):
+    routes = [
+        'api/',
+        'api/token',
+        'api/token/refresh'
+    ]
+
+    return Response(routes)
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, society):
+        token = super().get_token(society)
+
+        # Add custom claims
+        token['name'] = society.name
+        token['id'] = society.id
+
+        return token
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

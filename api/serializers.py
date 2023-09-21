@@ -15,7 +15,7 @@ class BudgetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Budget
-        fields = ['title', 'items', 'society_id']
+        fields = ['id', 'title', 'items', 'society_id', 'created_at']
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')

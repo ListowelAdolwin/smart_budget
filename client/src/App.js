@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import React, { useState } from "react";
 import MainDasboard from "./components/dashboard/MainDashboard";
+import EditBudget from "./components/EditBudget";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthContext from "./components/context/AuthContext";
 import jwt_decode from "jwt-decode";
@@ -24,7 +25,6 @@ function App() {
   const [id, setId] = useState(null);
   const [authtokens, setAuthtokens] = useState(initialToken);
   const [user, setUser] = useState(initialUser);
-
 
   const contextData = {
     name: name,
@@ -48,6 +48,15 @@ function App() {
               element={
                 <PrivateRoute isAuthenticated={user != null}>
                   <HomePage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/edit-budget/:id"
+              element={
+                <PrivateRoute isAuthenticated={user != null}>
+                  <EditBudget />
                 </PrivateRoute>
               }
             />

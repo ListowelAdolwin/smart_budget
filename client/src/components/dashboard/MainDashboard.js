@@ -17,7 +17,6 @@ const MainDasboard = () => {
       .get(`http://127.0.0.1:8000/api/get-budgets/${user.id}`)
       .then((res) => {
         setBudgets(res.data);
-        console.log("Data:", res.data);
       });
   }, []);
   const navigate = useNavigate();
@@ -30,9 +29,16 @@ const MainDasboard = () => {
           <h1>Welcome to smartBudget</h1>
           <h5>Let's make your budget writing stress-free</h5>
           <br />
-          <Button onClick={() => navigate("/create-budget")}>
+          {/* <Button onClick={() => navigate("/create-budget")}>
             Create New Budget
-          </Button>
+          </Button> */}
+
+          <button
+            onClick={() => navigate("/create-budget")}
+            className="bg-info ms-2 px-3 py-2 me-5 rounded-md"
+          >
+            Create New Budget
+          </button>
         </div>
       </div>
       <h2 className="m-5 text-center">Past Budgets</h2>
@@ -42,7 +48,7 @@ const MainDasboard = () => {
             <Budget
               key={budget.id}
               name={budget.title}
-              id={budget.user_id}
+              id={budget.id}
               date={budget.created_at}
             />
           </div>

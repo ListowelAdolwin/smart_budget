@@ -30,13 +30,6 @@ class BudgetSerializer(serializers.ModelSerializer):
         return budget
 
 
-""" class SocietySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Society
-        fields = "__all__"
-
-
- """
 class SocietySerializer(serializers.ModelSerializer):
     class Meta:
         model = Society
